@@ -8,14 +8,10 @@
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 #define EMPTY_STRING ""
-// #define GAME_OVER NULL
+
 Applet applet;
+bool is_game_over;
 
-
-
-
-
-bool isGameOver;
 bool check_collision_point_rec(vec2 point, rectangle rec)
 {
     if ((point.x >= rec.x) && (point.x <= (rec.x + rec.width)) && (point.y >= rec.y) && (point.y <= (rec.y + rec.height))) return true;
@@ -45,10 +41,6 @@ enum players
 void OnAppletUpdate()
 {
 
-
-    // while(isGameOver) {
-    //     draw_text()
-    // }
     circle ball = {
         .radius = 5,
         .x = SCREEN_WIDTH / 2,
@@ -90,8 +82,22 @@ void OnAppletUpdate()
     font p2sp = load_font("../font.ttf", "p2sp");
     char buf_p1[1024] = EMPTY_STRING;
     char buf_p2[1024] = EMPTY_STRING;
+
+    float delta_time = 0.0f;
+
+    float animation_timer = 0.0f;
+    float last_timer_state = 0.0f;
+
     while (keep_applet(applet.window_handle))
     {
+        delta_time = get_delta_time();
+        animation_timer += delta_time;
+
+        if (p1 >= 10)
+        {
+            is_game_over = true;
+        }
+        if (is_game_over &) 
 
         sprintf(buf_p1, "%i", p1);
         sprintf(buf_p2, "%i", p2);
@@ -143,7 +149,7 @@ void OnAppletUpdate()
 
             if (ball.x < player.x || ball.x > player2.x) 
             {
-                 isGameOver = true;
+                 is_game_over = true;
                 p2++;
                 ball.x = SCREEN_WIDTH / 2;
                 switch (ball_direction_y)
@@ -195,7 +201,7 @@ void OnAppletUpdate()
             if (ball.x < player.x  || ball.x > player2.x) 
             {
 
-                isGameOver = true;
+                is_game_over = true;
                 p1++;
                 ball.x = SCREEN_WIDTH / 2;
                 switch (ball_direction_y)
@@ -228,11 +234,13 @@ void OnAppletUpdate()
             break;
         }
 
+        update_delta_time();
+
         begin_drawing();
             clear_screen(BLACK);
             draw_text(p2sp, buf_p1, p1_point_counter_position.x, p1_point_counter_position.y + 650, 35, WHITE);
             draw_text(p2sp, buf_p2, p2_point_counter_position.x, p2_point_counter_position.y + 650, 35, WHITE);
-            if(isGameOver) {
+            if(is_game_over) {
                 draw_text(p2sp, "Game Over", SCREEN_WIDTH / 2 -190, SCREEN_HEIGHT / 2 + 300, 35, WHITE);
             }
             //if (paused) draw_text(p2sp, "Press Space", SCREEN_WIDTH / 2 - 15, 10, 20, WHITE);
